@@ -1,0 +1,319 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+
+.head_rectangle
+{
+background-color:#ffffff;
+height:50px;
+width:100%;
+filter:drop-shadow(0px 4px 10px rgba(0,0,0,0.25));
+position:fixed;
+top:0px;
+left:0px;
+z-index: 1001;
+}
+
+.homebtn
+{
+background-color:#ffffff;
+color:#000000;
+text-align:left;
+vertical-align:text-top;
+font-size:20px;
+font-family: "Oswald", sans-serif;
+font-optical-sizing: auto;
+font-weight: regular;
+font-style: normal;
+line-height:auto;
+border-style:hidden;
+outline:none;
+width:233px;
+position:absolute;
+top:2%;
+left:2%;
+text-decoration: none;
+}
+
+.rectangleSearch
+{
+background-color:#f1f1f1;
+height:27px;
+width:20%;
+top:5%;
+left:1%;
+position:absolute;
+border:1px solid #000000;
+}
+
+.btnSearch
+{
+background-color:#ffffff;
+height:27px;
+width:54px;
+border-radius:10px;
+border:1px solid #d93a3a;
+position:absolute;
+top:5%;
+left:24%;
+}
+
+.product_rectangle
+{
+width:178px;
+height:299px;
+border:1px solid #f1f1f1;
+}
+
+.card_list
+{
+list-style-type: none;
+display: flex;
+flex-direction: row;
+flex-wrap: wrap;
+justify-content: center;
+height:10%;
+width:600px;
+top:100px;
+left: 30%;
+position:absolute;
+}
+
+.order_card_img
+{
+height:108px;
+width:123px;
+left:20px;  
+position:relative;
+}
+
+.order_card_title
+{
+color:#000000;
+text-align:left;
+vertical-align:text-top;
+font-size:16px;
+font-family:Oswald;
+line-height:auto;
+border-style:hidden;
+outline:none;
+width:154.03125px;
+left:5%;
+position:relative;
+}
+
+.order_card_dscr
+{
+color:#8f8f8f;
+text-align:left;
+vertical-align:text-top;
+font-size:14px;
+font-family:Oswald;
+line-height:auto;
+border-style:hidden;
+outline:none;
+position:relative;
+width:154px;
+left:5%;
+}
+
+.order_card_price
+{
+color:#000000;
+text-align:left;
+vertical-align:text-top;
+font-size:16px;
+font-family:Oswald;
+line-height:auto;
+border-style:hidden;
+outline:none;
+position:relative;
+width:154px;
+top: 8px;
+left:5%;
+}
+
+.order_link
+{
+text-decoration: none;
+}
+
+.descr_image
+{
+position:absolute;
+height:300px;
+width:300px;
+left:5%;
+top:15%;
+}
+
+.descr_name
+{
+position:absolute;
+color:#000000;
+text-align:left;
+vertical-align:text-top;
+font-size:32px;
+font-family:Oswald;
+line-height:auto;
+border-style:hidden;
+outline:none;
+width:734px;
+left:5%;
+top:10%;
+}
+
+.descr_long
+{
+position:absolute;
+color:#000000;
+text-align:left;
+vertical-align:text-top;
+font-size:20px;
+font-family:Oswald;
+line-height:auto;
+border-style:hidden;
+outline:none;
+width:60%;
+left:30%;
+top:15%;
+}
+
+.descr_price
+{
+position:absolute;
+color:#000000;
+text-align:left;
+vertical-align:text-top;
+font-size:32px;
+font-family:Oswald;
+line-height:auto;
+border-style:hidden;
+outline:none;
+width:289px;
+width:60%;
+left:10%;
+top:42%;
+}
+
+.B_count
+{
+    position:relative;
+    color:#ffffff;
+    font-size:11px;
+    font-family:Oswald;
+    outline:none;
+    left:60%;
+    bottom: 110%;
+}
+    
+.basket_div
+{
+    position:absolute;
+    width:48px;
+    height:41px;
+    left:95%;
+    top:5%;
+}
+    
+.imagebusket
+{
+height:45px;
+width:45px;
+position:relative;
+}
+
+.basket_card_list
+{
+list-style-type: none;
+display: flex;
+flex-direction: column;
+height:100%;
+width:80%;
+top:100px;
+left: 5%;
+position:absolute;
+}
+
+.basket_product_rectangle
+{
+width:100%;
+height:220px;
+border:2px solid #f1f1f1;
+position:relative;
+top: 3%;
+}
+
+.basket_order_card_title
+{
+    color:#000000;
+    text-align:left;
+    vertical-align:text-top;
+    font-size:22px;
+    font-family:Oswald;
+    line-height:auto;
+    border-style:hidden;
+    outline:none;
+    left:220px;
+    bottom: 100%;
+    position:relative;
+    width:60%;
+}
+
+.basket_order_card_img
+{
+height:220px;
+width:220px;
+left:0%;  
+position:relative;
+}
+
+.basket_order_card_dscr
+{
+color:#8f8f8f;
+text-align:left;
+vertical-align:text-top;
+font-size:18px;
+font-family:Oswald;
+line-height:auto;
+border-style:hidden;
+outline:none;
+position:relative;
+width:60%;
+left:220px;
+bottom: 100%;
+}
+
+.basket_order_card_price
+{
+    color:#000000;
+text-align:left;
+vertical-align:text-top;
+font-size:18px;
+font-family:Oswald;
+line-height:auto;
+border-style:hidden;
+outline:none;
+position:relative;
+width:154px;
+width:60%;
+left:220px;
+bottom: 100%;
+}
+
+.rectangleBasketInp
+{
+background-color:#ffffff;
+height:33px;
+width:430px;
+border:1px solid #d93a3a;
+position:relative;
+left:220px;
+bottom: 100%;
+}
+
+.basket_attr
+{
+width:527px;
+position:relative;
+top:100px;
+left:-8%;
+}
