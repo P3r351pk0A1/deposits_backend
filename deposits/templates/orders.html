@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+{%if data.Basket_id != -1%}
+<a href = "{%url 'basket_url' data.Basket_id%}" >
+{%endif%}
+    <div class = basket_div>
+    {%if data.BasketCount > 0 %}
+    <img class = "imagebusket" src= 'http://localhost:9000/images/full_basket.png'>
+        <div class="B_count">{{data.BasketCount}}</div>
+    {%else%}
+    <img class = "imagebusket" src= 'http://localhost:9000/images/empty_basket.png'>
+    {%endif%}
+</div>
+</a>
+<form action = "{%url 'main_url'%}" method = get>
+    <input name = "search_mining_order" type = "text" class = "rectangleSearch value"="{{ search }}" placeholder = "Введите запрос" autocomplete="off"></input>
+    <button type = "submit" class = "btnSearch">Поиск</button>
+</form>
+
+<ul class = "card_list">
+    {% for order in data.orders %}
+            <a class = "order_link" href="{% url 'order_url' order.order_data.order_id %}">
+                <div class = product_rectangle>
+                    <img class = "order_card_img" src = "{{order.order_data.url}}" >
+                    <div class = "order_card_title"> {{order.order_data.name}}</div> 
+                    <div class = "order_card_dscr"> {{order.order_data.description}}</div> 
+                    <div class = "order_card_price"> {{order.order_data.price}} рублей</div> 
+                    <form action = "{%url 'addOrder_url' order.order_data.order_id%}" method = post>
+                        {% csrf_token %}
+                        <button name = "addOrderToBasket" type = "submit" class = "btnAddOrder">Добавить</button>
+                    </form>
+
+                </div>
+            </a> 
+    {% empty %}
+        <li>Список пуст</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

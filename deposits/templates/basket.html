@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<ul class = "basket_card_list">
+    <form action = "{%url 'delBasket_url' data.id%}" method = post>
+        {% csrf_token %}
+        <button name = "delBusket" type = "submit" class = "delBusketBtn">Удалить заявку</button>
+    </form>
+    <div class = 'basket_attr'>
+        <input name = "org_name" type = "text" class = 'rectangleBasketInp' value="{{ Organisation_name }}" placeholder = "Название Вашей организации" autocomplete="off"></input>
+        <input name = "dig_place" type = "text" class = 'rectangleBasketInp' value="{{ Mining_place }}" placeholder = "Место разработки" autocomplete="off"></input>
+        <input name = "start_date" type = "text" class = 'rectangleBasketInp' value="{{ Start_date }}" placeholder = "Дата начала разрабтоки" autocomplete="off"></input>
+        </div>
+    {% for order in data.orders %}
+        <div class = 'basket_product_rectangle'>
+            <img class = "basket_order_card_img" src = "{{order.image}}" >
+            <div class = "basket_order_card_title"> {{order.name}}</div> 
+            <div class = "basket_order_card_dscr"> {{order.dscr}}</div> 
+            <div class = "basket_order_card_price"> {{order.price}} рублей</div> 
+            <input name = "square" type = "text" class = 'rectangleBasketInp' value="{{ square }}" placeholder = "Площадь разработки (га)" autocomplete="off"></input>
+        </div>
+    {% endfor %}
+</ul>
+
+{% endblock %}

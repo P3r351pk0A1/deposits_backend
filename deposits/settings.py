@@ -30,6 +30,8 @@ ALLOWED_HOSTS = ['*']
 
 # Application definition
 
+
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -37,6 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.postgres',
+    'deposits',
+    
 ]
 
 MIDDLEWARE = [
@@ -54,7 +59,7 @@ ROOT_URLCONF = 'deposits.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / "deposits_lab/templates"],
+        'DIRS': [BASE_DIR / "deposits/templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -75,10 +80,15 @@ WSGI_APPLICATION = 'deposits.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'Mining_services', # Имя вашей БД. Если вы создали черезе psql или IDE свою базу и хотите использовать его - пропишите его имя здесь
+        'USER': 'alexandr',
+        'PASSWORD': '1111',
+        'HOST': 'localhost',
+        'PORT': 5432, # Стандартный порт PostgreSQL
     }
 }
+
 
 
 # Password validation
@@ -115,10 +125,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'deposits_lab/static/'
+STATIC_URL = 'deposits/static/'
 
 STATICFILES_DIRS = [
-    BASE_DIR / "deposits_lab/static",
+    BASE_DIR / "deposits/static",
 ]
 
 # Default primary key field type

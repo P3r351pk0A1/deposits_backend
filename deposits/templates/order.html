@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class = "descr_name">{{data.order.name}}</div>
+    <img class = "descr_image" src = "{{data.order.url}}">
+    <div class = "descr_long">{{data.order.long_description}}</div>
+    <div class = "descr_price">{{data.order.price}}  Рублей  </div>
+{% endblock %}
