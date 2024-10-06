@@ -1,7 +1,7 @@
 from django.contrib import admin
-from .models import  LinkBasketOrder, MiningBasket, MiningOrder, User
+from .models import  LinkServiceOrder, MiningService, MiningOrder
 
-admin.site.register(LinkBasketOrder)
-admin.site.register(MiningBasket)
+admin.site.register(LinkServiceOrder)
+admin.site.register(MiningService)
 admin.site.register(MiningOrder)
-admin.site.register(User)
+

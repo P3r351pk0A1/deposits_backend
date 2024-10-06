@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+{%if data.miningOrderId != -1%}
+<a href = "{%url 'mining_order_url' data.miningOrderId%}" >
+{%endif%}
+    <div class = 'mining_order_div'>
+    {%if data.miningOrderCount > 0 %}
+    <img class = "imagebusket" src= 'http://localhost:9000/images/full_basket.png'>
+        <div class="B_count">{{data.miningOrderCount}}</div>
+    {%else%}
+    <img class = "imagebusket" src= 'http://localhost:9000/images/empty_basket.png'>
+    {%endif%}
+</div>
+</a>
+<form action = "{%url 'main_url'%}" method = get>
+    <input name = "search_mining_service" type = "text" class = "rectangleSearch value"="{{ search }}" placeholder = "Введите запрос" autocomplete="off"></input>
+    <button type = "submit" class = "btnSearch">Поиск</button>
+</form>
+
+<ul class = "card_list">
+    {% for miningService in data.miningServices %}
+            <a class = "service_link" href="{% url 'mining_service_url' miningService.service_data.mining_service_id %}">
+                <div class = product_rectangle>
+                    <img class = "service_card_img" src = "{{miningService.service_data.url}}" >
+                    <div class = "service_card_title"> {{miningService.service_data.name}}</div> 
+                    <div class = "service_card_dscr"> {{miningService.service_data.description}}</div> 
+                    <div class = "service_card_price"> {{miningService.service_data.price}} рублей</div> 
+                    <form action = "{%url 'add_service_url' miningService.service_data.mining_service_id%}" method = post>
+                        {% csrf_token %}
+                        <button name = "addServiceToOrder" type = "submit" class = "btnAddService">Добавить</button>
+                    </form>
+
+                </div>
+            </a> 
+    {% empty %}
+        <li>Список пуст</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

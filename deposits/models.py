@@ -1,17 +1,17 @@
 from django.db import models
 
-class LinkBasketOrder(models.Model):
-    basket_id = models.IntegerField()
-    order_id = models.IntegerField()
+class LinkServiceOrder(models.Model):
+    mining_order_id = models.IntegerField()
+    mining_service_id = models.IntegerField()
     square = models.FloatField(blank=True, null=True)
 
     class Meta:
         managed = False
-        db_table = 'link_basket_orders'
-        unique_together = (('basket_id', 'order_id'),)
+        db_table = 'link_services_orders'
+        unique_together = (('mining_order_id', 'mining_service_id'),)
 
-class MiningBasket(models.Model):
-    basket_id = models.AutoField(primary_key=True)
+class MiningOrder(models.Model):
+    mining_order_id = models.AutoField(primary_key=True)
     creation_date = models.DateTimeField(blank=True, null=True)
     formation_date = models.DateTimeField(blank=True, null=True)
     ending_date = models.DateTimeField(blank=True, null=True)
@@ -24,11 +24,11 @@ class MiningBasket(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'mining_basket'
+        db_table = 'mining_order'
 
 
-class MiningOrder(models.Model):
-    order_id = models.AutoField(primary_key=True)
+class MiningService(models.Model):
+    mining_service_id = models.AutoField(primary_key=True)
     name = models.TextField(unique=True)
     description = models.TextField(unique=True)
     status = models.TextField()
@@ -38,14 +38,4 @@ class MiningOrder(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'mining_orders'
-
-
-class User(models.Model):
-    login = models.TextField(primary_key=True)
-    password = models.TextField()
-    role = models.TextField()
-
-    class Meta:
-        managed = False
-        db_table = 'users'
+        db_table = 'mining_service'

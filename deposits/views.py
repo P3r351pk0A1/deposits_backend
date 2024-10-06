@@ -1,7 +1,9 @@
+from django.http import HttpResponse
+
 from django.shortcuts import render, redirect
 from datetime import date
 import psycopg2
-from .models import  LinkBasketOrder, MiningBasket, MiningOrder, User
+from .models import  LinkServiceOrder, MiningService, MiningOrder
 
 conn = psycopg2.connect(dbname="Mining_services", host="localhost", user="alexandr", password="1111", port="5432")
 
@@ -9,109 +11,104 @@ cursor = conn.cursor()
 
 current_user_id = 1
 
-def getOrderById(Order_id):
-    return MiningOrder.objects.get(order_id=Order_id)
+def getServiceById(ServiceId):
+    return MiningService.objects.get(mining_service_id=ServiceId)
 
-def getDraftBasketByIdandUser(BasketId, UserId):
-    return MiningBasket.objects.get(basket_id = BasketId, creator_id= UserId, status='draft')
+def getDraftOrderByIdandUser(OrderId, UserId):
+    return MiningOrder.objects.filter(mining_order_id = OrderId, creator_id= UserId, status='draft').first()
 
-def getlinkBasketOrders(BasketId):
-    return LinkBasketOrder.objects.filter(basket_id=BasketId).all()
+def getlinkServiceOrder(OrderId):
+    return LinkServiceOrder.objects.filter(mining_order_id=OrderId).all()
 
 
-def addOrderToCurBasket(User_id, Order_id, count=1):
-    Basket = MiningBasket.objects.filter(creator_id=current_user_id, status='draft').first() 
-    if Basket == None:
-        Basket = MiningBasket.objects.create(creator_id = User_id, status = 'draft')
-    LinkBasketOrder.objects.get_or_create(basket_id=Basket.basket_id, order_id=Order_id, square=777)
+def addMiningServiceToCurOrder(UserId, ServiceId, count=1):
+    MOrder = MiningOrder.objects.filter(creator_id=current_user_id, status='draft').first() 
+    if MOrder == None:
+        MOrder = MiningOrder.objects.create(creator_id = UserId, status = 'draft')
+    LinkServiceOrder.objects.get_or_create(mining_order_id=MOrder.mining_order_id, mining_service_id=ServiceId, square=777)
     
-def DelBasketController(request, id):
+def DelOrderController(request, id):
     if id!=None:
-        cursor.execute('UPDATE mining_basket SET status = %s WHERE basket_id = %s', ("deleted", id,))
+        cursor.execute('UPDATE mining_order SET status = %s WHERE mining_order_id = %s', ("deleted", id,))
     conn.commit()
-    return redirect(OrdersController)
+    return redirect(MiningServicesController)
 
 
-def OrderAddController(request, id):
-    order = getOrderById(id)
-    if order == None:
-        return redirect(OrdersController)
-    addOrderToCurBasket(current_user_id, id)
-    return redirect(OrdersController)
+def ServiceAddController(request, id):
+    MService = getServiceById(id)
+    if MService == None:
+        return redirect(MiningServicesController)
+    addMiningServiceToCurOrder(current_user_id, id)
+    return redirect(MiningServicesController)
     
-def BasketController(request, id):
-    
-    
-    Basket = getDraftBasketByIdandUser(id, current_user_id)
-    if Basket == None:
-        return redirect(OrdersController)
+def MiningOrderController(request, id):
+    MOrder = getDraftOrderByIdandUser(id, current_user_id)
+    if MOrder == None:
+        return HttpResponse(status = 404)
 
-    BasketOrders = getlinkBasketOrders(id)
-    orders = []
-    
+    Service_Orders = getlinkServiceOrder(id)
+    Mining_Services = []
 
-    for BasketOrder in BasketOrders:
-        order = getOrderById(BasketOrder.order_id)
-        if order != None:
-            orders.append({
-                'image' : order.url,
-                'name' : order.name,
-                'dscr' : order.description,
-                'price' : order.price
+    for ServiceOrder in Service_Orders:
+        MService = getServiceById(ServiceOrder.mining_service_id)
+        if MService != None:
+            Mining_Services.append({
+                'image' : MService.url,
+                'name' : MService.name,
+                'price' : MService.price
             })
 
-    return render(request, 'basket.html', {'data' : {
+    return render(request, 'mining_order.html', {'data' : {
         'id' : id,
-        'orders':orders  
+        'miningServices':Mining_Services  
     }})
 
-def OrdersController(request):
+def MiningServicesController(request):
 
-    Basket_count = 0
-    cur_basket_id = -1
+    MOrderCount = 0
+    CurOrderId = -1
 
-    Basket = MiningBasket.objects.filter(creator_id=current_user_id, status='draft').first()  
+    MOrder = MiningOrder.objects.filter(creator_id=current_user_id, status='draft').first()  
 
-    if Basket!= None:
-        Orders_in_current_busket = getlinkBasketOrders(Basket.basket_id)
-        Basket_count = len(Orders_in_current_busket)
-        cur_basket_id = Basket.basket_id
+    if MOrder!= None:
+        Mining_Services_in_current_order = getlinkServiceOrder(MOrder.mining_order_id)
+        MOrderCount = len(Mining_Services_in_current_order)
+        CurOrderId = MOrder.mining_order_id
 
     search = ''
-    if 'search_mining_order' in request.GET:
-        search = request.GET['search_mining_order']
+    if 'search_mining_service' in request.GET:
+        search = request.GET['search_mining_service']
 
-    orders_list_main = [] 
+    mining_services_list_main = [] 
 
-    Orders_found_by_search = MiningOrder.objects.filter(name__icontains=search)
+    services_found_by_search = MiningService.objects.filter(name__icontains=search)
 
-    for order in Orders_found_by_search:
+    for miningService in services_found_by_search:
         isAdded = False
-        if Basket!= None:
-            for addedOrder in Orders_in_current_busket:
-                if addedOrder.order_id == order.order_id:
+        if MOrder!= None:
+            for addedMIningService in Mining_Services_in_current_order:
+                if addedMIningService.mining_service_id == miningService.mining_service_id:
                     isAdded = True
-                    # Basket_count += 1
                     break
-        orders_list_main.append({
-                    'order_data': order,
+        mining_services_list_main.append({
+                    'service_data': miningService,
                     'isAdded': isAdded
                 })
-    return render(request, 'orders.html', {'data' : {
-        'orders': orders_list_main,
-        'BasketCount' : Basket_count,
-        'Basket_id' : cur_basket_id
+    return render(request, 'mining_services.html', {'data' : {
+        'miningServices': mining_services_list_main,
+        'miningOrderCount' : MOrderCount,
+        'miningOrderId' : CurOrderId
         
     }})
 
-def SingleOrderController(request, id):
+def SingleServiceController(request, id):
 
-    Order = getOrderById(id)    
+    miningService = getServiceById(id)    
 
-    if Order == None:
-        return redirect(OrdersController)
+    if miningService == None:
+        return redirect(MiningServicesController)
 
-    return render(request, 'order.html', {'data':{
-        'order' : Order
+    return render(request, 'mining_service.html', {'data':{
+        'miningService' : miningService
     }})
 

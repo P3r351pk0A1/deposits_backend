@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<ul class = "basket_card_list">
+    <form action = "{%url 'del_order_url' data.id%}" method = post>
+        {% csrf_token %}
+        <button name = "delBusket" type = "submit" class = "delOrderBtn">Удалить заявку</button>
+    </form>
+    <div class = 'basket_attr'>
+        <input name = "org_name" type = "text" class = 'rectangleOrderInp' value="{{ Organisation_name }}" placeholder = "Название Вашей организации" autocomplete="off"></input>
+        <input name = "dig_place" type = "text" class = 'rectangleOrderInp' value="{{ Mining_place }}" placeholder = "Место разработки" autocomplete="off"></input>
+        <input name = "start_date" type = "text" class = 'rectangleOrderInp' value="{{ Start_date }}" placeholder = "Дата начала разрабтоки" autocomplete="off"></input>
+        </div>
+    {% for miningService in data.miningServices %}
+        <div class = 'order_product_rectangle'>
+            <img class = "order_service_card_img" src = "{{miningService.image}}" >
+            <div class = "order_service_card_title"> {{miningService.name}}</div>  
+            <div class = "order_service_card_price"> {{miningService.price}} рублей</div> 
+            <input name = "square" type = "text" class = 'rectangleSquareInp' value="{{ square }}" placeholder = "Площадь разработки (га)" autocomplete="off"></input>
+        </div>
+    {% endfor %}
+</ul>
+
+{% endblock %}

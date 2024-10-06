@@ -1,14 +1,14 @@
 from deposits import views
 from django.urls import path
 from django.contrib import admin
-from .views import BasketController, OrdersController, SingleOrderController, OrderAddController
+from .views import MiningOrderController, MiningServicesController, SingleServiceController, ServiceAddController
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('basket/<int:id>', views.BasketController, name='basket_url'),
-    path('', views.OrdersController, name = 'main_url'),
-    path('order/<int:id>/', views.SingleOrderController, name='order_url'),
-    path('add/<int:id>', views.OrderAddController, name = 'addOrder_url'),
-    path('del/<int:id>', views.DelBasketController, name = 'delBasket_url'),
+    path('mining_ordder/<int:id>', views.MiningOrderController, name='mining_order_url'),
+    path('', views.MiningServicesController, name = 'main_url'),
+    path('smining_service/<int:id>/', views.SingleServiceController, name='mining_service_url'),
+    path('add/<int:id>', views.ServiceAddController, name = 'add_service_url'),
+    path('del/<int:id>', views.DelOrderController, name = 'del_order_url'),
     
 ]
