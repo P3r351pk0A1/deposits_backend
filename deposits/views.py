@@ -5,7 +5,7 @@ from datetime import date
 import psycopg2
 from .models import  LinkServiceOrder, MiningService, MiningOrder
 
-conn = psycopg2.connect(dbname="Mining_services", host="localhost", user="alexandr", password="1111", port="5432")
+conn = psycopg2.connect(dbname="mining_services", host="localhost", user="alexandr", password="1111", port="5432")
 
 cursor = conn.cursor()
 
