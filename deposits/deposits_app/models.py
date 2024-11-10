@@ -1,20 +1,59 @@
 from django.db import models
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager, BaseUserManager
+from django.contrib.auth.models import Group, Permission
 
-class AuthUser(models.Model):
-    password = models.CharField(max_length=128)
-    last_login = models.DateTimeField(blank=True, null=True)
-    is_superuser = models.BooleanField()
-    username = models.CharField(unique=True, max_length=150)
-    first_name = models.CharField(max_length=150)
-    last_name = models.CharField(max_length=150)
-    email = models.CharField(max_length=254)
-    is_staff = models.BooleanField()
-    is_active = models.BooleanField()
-    date_joined = models.DateTimeField(auto_now_add=True)
+# class AuthUser(models.Model):
+#     password = models.CharField(max_length=128)
+#     last_login = models.DateTimeField(blank=True, null=True)
+#     is_superuser = models.BooleanField()
+#     username = models.CharField(unique=True, max_length=150)
+#     first_name = models.CharField(max_length=150)
+#     last_name = models.CharField(max_length=150)
+#     email = models.CharField(max_length=254)
+#     is_staff = models.BooleanField()
+#     is_active = models.BooleanField()
+#     date_joined = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-        managed = False
-        db_table = 'auth_user'
+#     class Meta:
+#         managed = False
+#         db_table = 'auth_user'
+
+class NewUserManager(UserManager):
+    def create_user(self,email, username, password=None, **extra_fields):
+        if not email:
+            raise ValueError('User must have an email address')
+        
+        email = self.normalize_email(email) 
+        user = self.model(email=email, username = username, **extra_fields) 
+        user.set_password(password)
+        user.save(using=self.db)
+        return user
+
+class CustomUser(AbstractBaseUser, PermissionsMixin):
+    email = models.EmailField(("email адрес"), max_length=100, unique=True)
+    username = models.CharField(max_length=100, unique=True, verbose_name="Имя пользователя")
+    password = models.CharField(max_length=100, verbose_name="Пароль")    
+    is_staff = models.BooleanField(default=False, verbose_name="Является ли пользователь менеджером?")
+    is_superuser = models.BooleanField(default=False, verbose_name="Является ли пользователь админом?")
+
+    USERNAME_FIELD = 'username'
+
+    objects =  NewUserManager()
+
+    groups = models.ManyToManyField(
+        Group,
+        related_name = 'CustomUserGroups',
+        blank = True,
+        verbose_name = 'Группы'
+    )
+
+    user_permissions = models.ManyToManyField(
+        Permission, 
+        related_name = 'CustomUserPermissions',
+        blank = True,
+        verbose_name = 'Разрешения'
+    )
 
 
 class MiningOrder(models.Model):
@@ -25,8 +64,8 @@ class MiningOrder(models.Model):
     location = models.TextField(blank=True, null=True)
     mining_start_date = models.DateTimeField(blank=True, null=True)
     status = models.TextField()
-    creator = models.ForeignKey(AuthUser, on_delete=models.DO_NOTHING, null=True, related_name='UserMiningOrders')
-    moderator = models.ForeignKey(AuthUser, on_delete=models.DO_NOTHING, null=True, related_name='ModeratorMiningOrders')
+    creator = models.ForeignKey(get_user_model(), on_delete=models.DO_NOTHING, null=True, related_name='UserMiningOrders')
+    moderator = models.ForeignKey(get_user_model(), on_delete=models.DO_NOTHING, null=True, related_name='ModeratorMiningOrders')
     order_cost = models.IntegerField(blank=True, null=True)
     moderation_date = models.DateTimeField(blank=True, null=True)
 

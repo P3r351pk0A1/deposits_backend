@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-oc6fy6i9!m2isa8b5t6t!t*uco!!i%#wdpq19_&^ki%)7%(y-i
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -40,7 +40,24 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'rest_framework',
     'deposits_app',
+    'drf_yasg',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        
+    ],
+    
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    # ]
+}
+
+AUTH_USER_MODEL = 'deposits_app.CustomUser'
+
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -50,6 +67,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8000'
 ]
 
 ROOT_URLCONF = 'deposits.urls'
