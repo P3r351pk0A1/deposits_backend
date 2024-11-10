@@ -37,7 +37,7 @@ class MiningOrder(models.Model):
 
 class MiningService(models.Model):
     mining_service_id = models.AutoField(primary_key=True)
-    name = models.TextField(unique=True)
+    name = models.TextField(unique=True, blank=True, null=True)
     description = models.TextField(unique=True, blank=True, null=True)
     status = models.TextField(blank=True, null=True)
     url = models.TextField(unique=True, blank=True, null=True)

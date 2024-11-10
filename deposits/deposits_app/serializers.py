@@ -14,6 +14,11 @@ class MiningServiceSerializer(serializers.ModelSerializer):
         model = MiningService
         fields = '__all__'
 
+class MiningServiceSerializerInserted(serializers.ModelSerializer):
+    class Meta:
+        model = MiningService
+        fields = ["name", "status", "url", "price"]
+
 class MiningOrdermmfieldsSerializer(serializers.ModelSerializer):
     class Meta:
         model = MiningOrder
@@ -33,15 +38,22 @@ class MiningOrdersSerialiser(serializers.ModelSerializer):
     class Meta:
         model = MiningOrder
         fields = ["mining_order_id", "status", "creation_date", "formation_date", "moderation_date", "company_name", "location", 
-                  "mining_start_date", "creator", "moderator"]
+                  "mining_start_date", "creator", "moderator", "order_cost"]
+
+class MiningServiceOrderSerializerInserted(serializers.ModelSerializer):
+    Mservice = MiningServiceSerializerInserted(source = 'mining_service', read_only=True)
+
+    class Meta:
+        model = LinkServicesOrders
+        fields = ["Mservice", "square"]
 
 class SingleMiningOrderSerializer(serializers.ModelSerializer):
-    mining_services_in_order = MiningServiceOrderSerializer(source = 'linked_mining_orders',  many = True, read_only = True)
+    mining_services_in_order = MiningServiceOrderSerializerInserted(source = 'linked_mining_orders',  many = True, read_only = True)
     creator = serializers.StringRelatedField()
     moderator = serializers.StringRelatedField()
 
     class Meta:
         model = MiningOrder
         fields = ["mining_order_id", "status", "creation_date", "formation_date", "moderation_date", "company_name", "location", 
-                  "mining_start_date", "mining_services_in_order", "creator", "moderator"]
+                  "mining_start_date", "order_cost", "mining_services_in_order", "creator", "moderator"]
 

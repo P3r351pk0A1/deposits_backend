@@ -32,10 +32,11 @@ class MiningServiceMethods(APIView):
     def get (self, request, format = None):
         searchingMiningServices = request.query_params.get('name')
 
+
         filteredMiningServices = self.model_class.objects.filter(status = 'valid')
         if searchingMiningServices:
             filteredMiningServices = MiningService.objects.filter(name__icontains=searchingMiningServices)
-            
+
         CurUser = user()
         if CurUser:
             UsersDraft = MiningOrder.objects.filter(creator_id=CurUser.id, status='draft').first()
@@ -182,6 +183,7 @@ class FormingByCreator(APIView):
     def put(self, request, pk, format = None):
         Mining_Order = get_object_or_404(self.model_class, pk=pk)
         serializer = self.serializer_class(Mining_Order)
+        print(serializer)
         if Mining_Order.status == 'draft' and Mining_Order.company_name is not None and Mining_Order.location is not None and Mining_Order.mining_start_date is not None:
             Mining_Order.formation_date = datetime.date.today().isoformat()
             Mining_Order.status = 'formed'

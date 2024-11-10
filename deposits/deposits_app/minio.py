@@ -47,7 +47,8 @@ def del_pic(Mining_service):
         secure=settings.MINIO_USE_SSL
     )
     mining_pic_url = Mining_service.url
-    mining_pic_url = '/'.join(mining_pic_url.split('/')[4:])
+    if mining_pic_url:
+        mining_pic_url = '/'.join(mining_pic_url.split('/')[4:])
 
     result = process_file_delete(client, mining_pic_url)
     if 'error' in result:
