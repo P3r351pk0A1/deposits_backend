@@ -8,11 +8,9 @@ session_storage = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDI
 
 def getUserBySession(request):
     sessionid = request.COOKIES.get('session_id')
-    print('3')
     if sessionid:
         try:
             username = session_storage.get(sessionid).decode('utf-8')
-            print(username)
             user = get_user_model().objects.get(username = username)
         except AttributeError:
             user = AnonymousUser()

@@ -6,19 +6,6 @@ from rest_framework import serializers
 from deposits_app.models import CustomUser
 from collections import OrderedDict
 
-
-# class AuthUserSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = AuthUser
-#         fields = '__all__'
-
-#         def get_fields(self):
-#             new_fields = OrderedDict()
-#             for name, field in super().get_fields().items():
-#                 field.required = False
-#                 new_fields[name] = field
-#             return new_fields 
-
 class MiningServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = MiningService
@@ -30,20 +17,57 @@ class MiningServiceSerializer(serializers.ModelSerializer):
                 field.required = False
                 new_fields[name] = field
             return new_fields 
-
-#сериалайзер ради вложенности
-class MiningServiceSerializerInserted(serializers.ModelSerializer):
-    class Meta:
-        model = MiningService
-        fields = ["name", "status", "url", "price"]
         
+class LinkServiceOrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LinkServicesOrders
+        fields = '__all__'
+
         def get_fields(self):
             new_fields = OrderedDict()
             for name, field in super().get_fields().items():
                 field.required = False
                 new_fields[name] = field
-            return new_fields 
+            return new_fields
 
+class MServicesListSerializer(serializers.Serializer):
+    name = serializers.CharField()
+
+class MiningServiceResponseSerializer(serializers.Serializer):
+    mining_service_id = serializers.IntegerField()
+    name = serializers.CharField()
+
+
+class ActiveMOrderSerializer(serializers.Serializer):
+    MiningServicesInUsersDraft = serializers.IntegerField()
+    UsersDraftId = serializers.IntegerField()
+    
+class MiningServicesListResponseSerializer(serializers.Serializer):
+    services = MiningServiceSerializer(many = True)
+    active_m_order = ActiveMOrderSerializer()
+    MServicesInCurOrder = LinkServiceOrderSerializer(many = True)
+
+class ModifyMiningOrderSerializer(serializers.Serializer):
+    mining_order_id = serializers.IntegerField()
+    company_name = serializers.CharField()
+    mining_start_date = serializers.DateTimeField()
+    location = serializers.CharField()
+
+
+
+#сериалайзер ради вложенности
+class MiningServiceSerializerInserted(serializers.ModelSerializer):
+    class Meta:
+        model = MiningService
+        fields = ["mining_service_id", "name", "status", "url", "price"]
+        
+        def get_fields(self):   
+            new_fields = OrderedDict()
+            for name, field in super().get_fields().items():
+                field.required = False
+                new_fields[name] = field
+            return new_fields 
+            
 class MiningOrdermmfieldsSerializer(serializers.ModelSerializer):
     class Meta:
         model = MiningOrder
@@ -66,7 +90,7 @@ class MiningServiceOrderSerializer(serializers.ModelSerializer):
         def get_fields(self):
             new_fields = OrderedDict()
             for name, field in super().get_fields().items():
-                field.required = False
+                field.required = False  
                 new_fields[name] = field
             return new_fields 
         
@@ -86,6 +110,9 @@ class MiningOrdersSerialiser(serializers.ModelSerializer):
                 new_fields[name] = field
             return new_fields 
         
+class MiningOrdersListResponseSerializer(serializers.Serializer):
+    mining_orders = MiningOrdersSerialiser(many = True)
+
 #сериалайзер ради вложенности
 class MiningServiceOrderSerializerInserted(serializers.ModelSerializer):
     Mservice = MiningServiceSerializerInserted(source = 'mining_service', read_only=True)
@@ -117,13 +144,13 @@ class SingleMiningOrderSerializer(serializers.ModelSerializer):
                 field.required = False
                 new_fields[name] = field
             return new_fields 
-        
+            
 class UserSerializer(serializers.ModelSerializer):
     is_staff = serializers.BooleanField(default=False, required=False)
     is_superuser = serializers.BooleanField(default=False, required=False)
     class Meta:
-        model = CustomUser
-        fields = ['email', 'password', 'is_staff', 'is_superuser', 'username']
+        model = CustomUser  
+        fields = ['email', 'password', 'is_staff', 'is_superuser', 'username', 'first_name', 'last_name']
 
         def get_fields(self):
             new_fields = OrderedDict()

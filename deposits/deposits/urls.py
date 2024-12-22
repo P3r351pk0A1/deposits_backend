@@ -28,7 +28,7 @@ urlpatterns = [
     path('user/login',  views.Authentication.as_view(), name='login'),
     path('user/logout', views.Deauthorisation.as_view(), name='logout'),  
     path('user/reg', views.UserRegistration.as_view(), name = 'mining-user'),
-    path('user/<int:pk>', views.UserRegistration.as_view(), name = 'mining-user-lk'),
+    path('user/LK', views.UserRegistration.as_view(), name = 'mining-user-lk'),
 
     path('admin/', admin.site.urls),
     # path('', include(router.urls)),

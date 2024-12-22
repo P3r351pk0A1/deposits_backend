@@ -30,12 +30,17 @@ class NewUserManager(UserManager):
         user.save(using=self.db)
         return user
 
+
+
+
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(("email адрес"), max_length=100, unique=True)
     username = models.CharField(max_length=100, unique=True, verbose_name="Имя пользователя")
     password = models.CharField(max_length=100, verbose_name="Пароль")    
     is_staff = models.BooleanField(default=False, verbose_name="Является ли пользователь менеджером?")
     is_superuser = models.BooleanField(default=False, verbose_name="Является ли пользователь админом?")
+    first_name = models.CharField(max_length=150, verbose_name='Имя')
+    last_name = models.CharField(max_length=150, verbose_name='Фамилия')
 
     USERNAME_FIELD = 'username'
 
@@ -45,15 +50,35 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         Group,
         related_name = 'CustomUserGroups',
         blank = True,
-        verbose_name = 'Группы'
+        verbose_name = 'Группы',
+        through='CustomUserGroup'
     )
 
     user_permissions = models.ManyToManyField(
         Permission, 
         related_name = 'CustomUserPermissions',
         blank = True,
-        verbose_name = 'Разрешения'
+        verbose_name = 'Разрешения',
+        through='CustomUserPermission'
     )
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user'                      
+
+class CustomUserGroup(models.Model):
+    custom_user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'custom_user_groups'
+
+class CustomUserPermission(models.Model):
+    custom_user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    permission = models.ForeignKey(Permission, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'custom_user_permissions'
 
 
 class MiningOrder(models.Model):
@@ -97,3 +122,4 @@ class LinkServicesOrders(models.Model):
         managed = False
         db_table = 'link_services_orders'
         unique_together = (('mining_order_id', 'mining_service_id'),)
+
