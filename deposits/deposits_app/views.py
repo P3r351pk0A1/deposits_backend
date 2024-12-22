@@ -54,7 +54,6 @@ class MiningServiceMethods(APIView):
     def get (self, request, format = None):
         searchingMiningServices = request.query_params.get('name')
 
-
         filteredMiningServices = self.model_class.objects.filter(status = 'valid')
         if searchingMiningServices:
             filteredMiningServices = MiningService.objects.filter(name__icontains=searchingMiningServices)
@@ -123,6 +122,7 @@ class MiningServiceMethods_byId(APIView):
     #Post добавление услуги в черновик
     @swagger_auto_schema(request_body = MiningOrdersSerialiser)
     @method_permission_classes([IsAuth])
+
     def post(self, request, pk, format = None):
         CurUser = getUserBySession(request)
         draftOrder = CurUser.UserMiningOrders.filter(status = 'draft').first()

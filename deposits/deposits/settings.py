@@ -54,7 +54,7 @@ REST_FRAMEWORK = {
     # ]
 }
 
-AUTH_USER_MODEL = 'deposits_app.CustomUser'
+# AUTH_USER_MODEL = 'deposits_app.CustomUser'
 
 REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
