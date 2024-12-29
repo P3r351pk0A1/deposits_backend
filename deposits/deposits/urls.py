@@ -43,7 +43,8 @@ urlpatterns = [
 
     path('miningServiceOrder/<int:pk_mservice>/<int:pk_morder>', views.LinkMiningServisesOrdersMethods.as_view(), name = 'mining-service-orders'),
     
-    path('miningServiceAttrubute', views.AttributeService.as_view(), name = 'mining-service-attr')
+    path('miningServiceAttrubute', views.AttributeService.as_view(), name = 'mining-service-attr'),
+    path('miningAttrubute', views.Attribute.as_view(), name = 'mining-attr')
     
    
    

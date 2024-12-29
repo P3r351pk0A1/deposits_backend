@@ -430,7 +430,7 @@ class Deauthorisation(APIView):
         return Response({'deauthorisation':'complete'}, status=status.HTTP_200_OK)
 
 
-class AttributeService(APIView):
+class Attribute(APIView):
     model_class=AttributesServicesMm
     serializer_class = AttributesServicesMmSerializer
 
@@ -449,6 +449,10 @@ class AttributeService(APIView):
         if serializer.is_valid():
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class AttributeService(APIView):
+    model_class=AttributesServicesMm
+    serializer_class = AttributesServicesMmSerializer
     
     @swagger_auto_schema(request_body = AttributeRequestSerializer, responses = {200:AttributeRequestSerializer})
     @method_permission_classes([IsAuth]) 
