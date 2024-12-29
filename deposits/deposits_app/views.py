@@ -1,6 +1,6 @@
 from django.shortcuts import render
 import psycopg2
-from django.db.models import Q
+from django.db.models import Q, F
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
@@ -103,11 +103,18 @@ class MiningServiceMethods_byId(APIView):
     serializer_class = MiningServiceSerializer
 
     #GET получение одной услуги
-    def get (self, request, pk, format = None):
+    @swagger_auto_schema(responses={200: MiningServiceResponseSerializer})
+    def get(self, request, pk):
         Mining_Service = get_object_or_404(self.model_class, pk=pk)
-        serializer = self.serializer_class(Mining_Service)
-        return Response(serializer.data)
-    
+        attributes = AttributesServicesMm.objects.filter(service_id=Mining_Service.pk)
+        missing_attributes = Attributes.objects.exclude(id__in=attributes.values_list('attribute_id', flat=True))
+        attributes = list(attributes) + [AttributesServicesMm(service_id=Mining_Service.pk, attribute_id=attr.id, value='') for attr in missing_attributes]
+        serializer = AttributesServicesMmSerializer(attributes, many=True)
+        return Response({
+            'mining_service': MiningServiceSerializer(Mining_Service).data,
+            'service_attributes': serializer.data,
+        })
+
     #PUT изменение услуги
     @swagger_auto_schema(request_body = serializer_class)
     @method_permission_classes((IsAdmin,))
@@ -135,7 +142,6 @@ class MiningServiceMethods_byId(APIView):
     #Post добавление услуги в черновик
     @swagger_auto_schema(responses = {200:ActiveMOrderSerializer})
     @method_permission_classes([IsAuth])
-
     def post(self, request, pk, format = None):
         CurUser = getUserBySession(request)
         draftOrder = CurUser.UserMiningOrders.filter(status = 'draft').first()
@@ -260,7 +266,6 @@ class FormingByCreator(APIView):
         CurUser = getUserBySession(request)
         Mining_Order = get_object_or_404(self.model_class, pk=pk)
         serializer = self.serializer_class(Mining_Order)
-        print(serializer)
         if Mining_Order.creator == CurUser and Mining_Order.status == 'draft' and Mining_Order.company_name is not None and Mining_Order.location is not None and Mining_Order.mining_start_date is not None:
             Mining_Order.formation_date = datetime.date.today().isoformat()
             Mining_Order.status = 'formed'
@@ -374,7 +379,6 @@ class UserRegistration(APIView):
         edited_user = self.model_class.objects.get(pk=CurUser.pk)                 
         if request.data.get('password') == '-1':    
             request.data['password'] = edited_user.password                       
-        print ( request.data)
         serializer = self.serializer_class(edited_user, data=request.data, partial=True)  
         if serializer.is_valid():
             serializer.save()                               
@@ -423,4 +427,51 @@ class Deauthorisation(APIView):
     def post(self, request, format = None):
         sess_id = request.COOKIES.get('session_id')
         session_storage.delete(sess_id)
-        return Response({'deauthorisation':'complete'}, status=status.HTTP_200_OK       )
+        return Response({'deauthorisation':'complete'}, status=status.HTTP_200_OK)
+
+
+class AttributeService(APIView):
+    model_class=AttributesServicesMm
+    serializer_class = AttributesServicesMmSerializer
+
+    @swagger_auto_schema(request_body = AttributeRequestSerializer, responses = {200:AttributeResponseSerializer})
+    @method_permission_classes([IsAuth]) 
+    def post(self, request, format = None):
+        attribute = Attributes.objects.filter(attribute_name = request.data['attribute_name']).first()
+        if not attribute:
+            attribute = Attributes(attribute_name = request.data['attribute_name'])
+            attribute.save()
+        else:
+            return Response({'Error': {'message':'Attribute already exists'}}, status=status.HTTP_208_ALREADY_REPORTED)  
+        serializer = AttributeResponseSerializer(data={
+            'attribute_name': attribute.attribute_name
+        })
+        if serializer.is_valid():
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    @swagger_auto_schema(request_body = AttributeRequestSerializer, responses = {200:AttributeRequestSerializer})
+    @method_permission_classes([IsAuth]) 
+    def put(self, request, format = None):
+        attribute = Attributes.objects.filter(attribute_name = request.data['attribute_name']).first()
+        if not attribute:
+            return Response({'error': 'not found attribute'})
+        try:
+            attribute_service = AttributesServicesMm.objects.get(attribute_id = attribute.id, service_id = request.data['service_id'])
+            attribute_service.value = request.data['attribute_value']
+            attribute_service.save()
+        except AttributesServicesMm.DoesNotExist:
+            attribute_service = AttributesServicesMm.objects.create(attribute_id = attribute.id, service_id = request.data['service_id'])
+        serializer = AttributesServicesMmSerializer(attribute_service)
+        return Response(serializer.data)
+    
+    @swagger_auto_schema(request_body = AttributeRequestSerializer, responses = {200:AttributeRequestSerializer})
+    @method_permission_classes([IsAuth]) 
+    def delete(self, request, format = None):
+        attribute = Attributes.objects.filter(attribute_name = request.data['attribute_name']).first()
+        try:
+            attribute_service = AttributesServicesMm.objects.get(attribute_id = attribute.id, service_id = request.data['service_id'])
+            attribute_service.delete()
+        except AttributesServicesMm.DoesNotExist:
+            return Response(status=status.HTTP_202_ACCEPTED)    
+        return Response(status=status.HTTP_202_ACCEPTED)

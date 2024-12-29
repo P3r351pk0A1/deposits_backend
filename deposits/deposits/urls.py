@@ -31,7 +31,6 @@ urlpatterns = [
     path('user/LK', views.UserRegistration.as_view(), name = 'mining-user-lk'),
 
     path('admin/', admin.site.urls),
-    # path('', include(router.urls)),
 
     path('miningServices', views.MiningServiceMethods.as_view(), name='mining-services'),
     path('miningServices/<int:pk>', views.MiningServiceMethods_byId.as_view(), name='single-mining-service'),
@@ -44,12 +43,7 @@ urlpatterns = [
 
     path('miningServiceOrder/<int:pk_mservice>/<int:pk_morder>', views.LinkMiningServisesOrdersMethods.as_view(), name = 'mining-service-orders'),
     
-    # path(r'miningUser', views.UserMethods.as_view(), name = 'mining-user'),
-    # path(r'miningUser/<int:pk>', views.UserMethods.as_view(), name = 'mining-user-pw'),
-
-    # path(r'authentification', views.Authentification.as_view(), name = 'mining-user-authentification'),
-    # path(r'deauthorisation', views.Deauthorisation.as_view(), name = 'mining-user-deauthorisation'),
-
+    path('miningServiceAttrubute', views.AttributeService.as_view(), name = 'mining-service-attr')
     
    
    

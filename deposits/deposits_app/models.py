@@ -123,3 +123,25 @@ class LinkServicesOrders(models.Model):
         db_table = 'link_services_orders'
         unique_together = (('mining_order_id', 'mining_service_id'),)
 
+
+
+
+class Attributes(models.Model):
+    id = models.AutoField(primary_key=True)
+    attribute_name = models.TextField()
+
+    class Meta:
+        managed = False
+        db_table = 'attributes'
+
+
+class AttributesServicesMm(models.Model):
+    id = models.AutoField(primary_key=True)
+    attribute = models.ForeignKey(Attributes, on_delete=models.DO_NOTHING, related_name='attribute_services')
+    service = models.ForeignKey(MiningService, on_delete=models.DO_NOTHING, related_name='service_attributes')
+    value = models.TextField(blank=True, null=True)
+    
+    class Meta:
+        managed = False
+        db_table = 'attributes_services_mm'
+        unique_together = (('service_id', 'attribute_id'),)

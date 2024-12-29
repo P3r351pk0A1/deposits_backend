@@ -1,6 +1,8 @@
 from deposits_app.models import LinkServicesOrders
 from deposits_app.models import MiningOrder
 from deposits_app.models import MiningService
+from deposits_app.models import AttributesServicesMm
+from deposits_app.models import Attributes
 from rest_framework import serializers
 # from deposits_app.models import AuthUser
 from deposits_app.models import CustomUser
@@ -158,3 +160,45 @@ class UserSerializer(serializers.ModelSerializer):
                 field.required = False
                 new_fields[name] = field
             return new_fields 
+
+class AttributesServicesMmSerializer(serializers.ModelSerializer):
+    attribute_name = serializers.CharField(source='attribute.attribute_name', read_only=True)
+    # service_id = serializers.IntegerField(read_only=True)
+    value = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = AttributesServicesMm
+        fields = ['attribute_name',  'value']
+
+        def get_fields(self):
+            new_fields = OrderedDict()
+            for name, field in super().get_fields().items():
+                field.required = False
+                new_fields[name] = field
+            return new_fields
+        
+class AttributeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Attributes
+        fields = ['id', 'attribute_name']
+
+        def get_fields(self):
+            new_fields = OrderedDict()
+            for name, field in super().get_fields().items():
+                field.required = False
+                new_fields[name] = field
+            return new_fields
+        
+class AttributeRequestSerializer(serializers.Serializer):
+    attribute_name = serializers.CharField()
+    attribute_value = serializers.CharField()
+    service_id = serializers.IntegerField()
+
+class AttributeResponseSerializer(serializers.Serializer):
+    attribute_name = serializers.CharField()
+
+class MiningServiceResponseSerializer(serializers.Serializer):
+    mining_service = MiningServiceSerializer()
+    service_attributes = AttributesServicesMmSerializer(many = True)
+
+
